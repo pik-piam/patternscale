@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "patternscale"
+dynamic = ["version"]
+description = "Generic proxy-based pattern-scaling downscaling of regional scenario data to grids"
+authors = [{ name = "Pascal Weigmann", email = "pascal.weigmann@pik-potsdam.de" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "xarray",
+    "dask",
+    "pydantic>=2",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+io = ["rioxarray", "zarr", "netcdf4"]
+preprocess = ["rioxarray", "zarr", "netcdf4", "scipy", "pycountry", "affine"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = { attr = "patternscale.__version__" }

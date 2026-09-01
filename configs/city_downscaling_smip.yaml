@@ -1,0 +1,58 @@
+# Example patternscale configuration: city downscaling, SMIP country scenarios.
+# Load with: patternscale.Config.from_yaml("configs/city_downscaling_smip.yaml")
+# Only the "downscaling" section is interpreted by the engine; "meta" holds
+# free-form labels (model/scenario are attached to output tables).
+downscaling:
+  years: [2020, 2050]
+  base_year: 2020
+  grid:
+    resolution_deg: 0.1        # ~12 km at the equator
+  region_var: region_number
+  variables:
+    - {name: "Emissions|CO2|Energy|Supply",                          short: CO2_Supply,    proxy: GDP}
+    - {name: "Emissions|CO2|Energy|Demand|Transportation",           short: CO2_Transport, proxy: GDP}
+    - {name: "Emissions|CO2|Energy|Demand|Residential and Commercial", short: CO2_Buildings, proxy: POP}
+    - {name: "Emissions|CO2|Industry",                               short: CO2_Industry,  proxy: GDP}
+    - {name: "Emissions|CO2|Waste",                                  short: CO2_Waste,     proxy: POP}
+    - {name: "Emissions|CH4|Energy|Supply",                          short: CH4_Supply,    proxy: GDP}
+    - {name: "Emissions|CH4|Energy|Demand|Transportation",           short: CH4_Transport, proxy: GDP}
+    - {name: "Emissions|CH4|Energy|Demand|Residential and Commercial", short: CH4_Buildings, proxy: POP}
+    - {name: "Emissions|CH4|Waste",                                  short: CH4_Waste,     proxy: POP}
+    - {name: "Emissions|CH4|Industry",                               short: CH4_Industry,  proxy: GDP}
+    - {name: "Emissions|N2O|Energy|Supply",                          short: N2O_Supply,    proxy: GDP}
+    - {name: "Emissions|N2O|Energy|Demand|Transportation",           short: N2O_Transport, proxy: GDP}
+    - {name: "Emissions|N2O|Energy|Demand|Residential and Commercial", short: N2O_Buildings, proxy: POP}
+    - {name: "Emissions|N2O|Waste",                                  short: N2O_Waste,     proxy: POP}
+    - {name: "Emissions|N2O|Industry",                               short: N2O_Industry,  proxy: GDP}
+  proxies:
+    POP:
+      grid_var: Population
+      scenario_var: Population
+      intensity_divisor: 1.0     # Mt / million cap = t/cap
+      min_value: 0.01            # people / 100 km^2 (min_proxy floor)
+    GDP:
+      grid_var: GDP
+      scenario_var: GDP|PPP
+      intensity_divisor: 1000.0  # Mt / billion $ -> t/$
+      min_value: 1.0             # $ / 100 km^2 (min_proxy floor)
+  corrections:
+    min_proxy: true
+    new_dev:
+      enabled: true
+      threshold: 3.0
+  normalization:
+    skip_first_norm: true
+    grid_to_scenario_factor: 1.0e6   # grid t <-> scenario Mt
+
+output:
+  dir: null                    # set per run
+  save_grid: true
+  save_tables: true
+  save_config: true
+
+logging:
+  level: INFO
+  file: null
+  diagnostics: false
+
+meta: {}
